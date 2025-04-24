@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-import cv2
+from PIL import Image
 import tempfile
 import os
 import time
@@ -640,25 +640,27 @@ def visualize_frames_with_detections(frames_with_detections):
     for i, (frame, boxes, names) in enumerate(frames_with_detections[:5]): 
         if i >= len(axes):
             break
-            
-        axes[i].imshow(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-        
+
+        # Convert the BGR NumPy array to RGB using PIL
+        image = Image.fromarray(frame[..., ::-1])  # Convert BGR to RGB
+        axes[i].imshow(image)
+
         for box in boxes:
             x1, y1, x2, y2 = map(int, box.xyxy[0])
             cls_id = int(box.cls[0])
             conf = float(box.conf[0])
             class_name = names[cls_id]
-            
-            rect = plt.Rectangle((x1, y1), x2-x1, y2-y1, 
-                                 fill=False, edgecolor='red', linewidth=2)
+
+            rect = plt.Rectangle((x1, y1), x2-x1, y2-y1,
+                                fill=False, edgecolor='red', linewidth=2)
             axes[i].add_patch(rect)
-            axes[i].text(x1, y1-10, f"{class_name}: {conf:.2f}", 
-                        color='white', fontsize=10, 
+            axes[i].text(x1, y1-10, f"{class_name}: {conf:.2f}",
+                        color='white', fontsize=10,
                         bbox=dict(facecolor='red', alpha=0.5))
-        
+
         axes[i].set_title(f"Frame {i+1}")
         axes[i].axis('off')
-    
+
     plt.tight_layout()
     return fig
 
