@@ -1,1 +1,14 @@
-
+streamlit
+numpy
+opencv-python
+tensorflow
+ultralytics
+librosa
+pillow
+matplotlib
+seaborn
+plotly
+pandas>=
+requests
+python-dotenv
+openai
